@@ -94,6 +94,14 @@ export function useCsvUploader() {
     const closePreviewModal = () => {
         showPreviewModal.value = false;
     };
+    const resetFileInput = () => {
+        file.value = null;
+        message.value = '';
+        // Reset the file input element
+        if (fileInput.value) {
+            fileInput.value.value = '';
+        }
+    };
     const handleSubmit = async () => {
         summary.value = null;
         if (!file.value) return;
@@ -120,6 +128,7 @@ export function useCsvUploader() {
                 summary.value = response.data;
                 file.value = null;
                 message.value = '';
+                resetFileInput();
                 showMessage('File uploaded successfully!', 'success');
             }
         } catch (error) {
@@ -159,6 +168,9 @@ export function useCsvUploader() {
         file.value = null;
         message.value = '';
         summary.value = null;
+        if (fileInput.value) {
+            fileInput.value.value = '';
+        }
     };
 
     return {

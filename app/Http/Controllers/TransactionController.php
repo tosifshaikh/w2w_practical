@@ -24,8 +24,7 @@ class TransactionController extends Controller
                     ->orWhere('last4', 'like', '%'.$request->search.'%')
                     ->orWhere('id', 'like', '%'.$request->search.'%')
                     ->orWhereHas('customer', function ($q) use ($request) {
-                        $q->where('first_name', 'like', '%'.$request->search.'%')
-                            ->orWhere('last_name', 'like', '%'.$request->search.'%')
+                        $q->where('customer_name', 'like', '%'.$request->search.'%')
                             ->orWhere('email', 'like', '%'.$request->search.'%');
                     });
             });
