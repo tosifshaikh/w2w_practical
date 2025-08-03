@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-
         $this->command->info('✅ Sample user created:');
         $this->command->info('   📧 test@example.com / password: password');
         $this->command->info('');
@@ -29,9 +28,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('   📄 Sample CSV: /public/sample-transactions.csv');
 
         $this->call([
-        CurrenciesTableSeeder::class,
-        PaymentTypesTableSeeder::class,
-        PaymentStatusesTableSeeder::class,
-    ]);
+            CurrenciesTableSeeder::class,
+            PaymentTypesTableSeeder::class,
+            PaymentStatusesTableSeeder::class,
+        ]);
     }
 }

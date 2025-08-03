@@ -14,16 +14,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    //Routes for CSV upload
+    // Routes for CSV upload
     Route::get('/csv-upload', function () {
         return Inertia::render('CSVUpload/CSVUpload');
     })->name('csvupload');
     Route::post('/csv-upload', [App\Http\Controllers\UploadController::class, 'store']);
 
-    //Transaction listing
+    // Transaction listing
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 });
 
-
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';

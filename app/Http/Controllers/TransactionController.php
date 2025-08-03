@@ -20,13 +20,13 @@ class TransactionController extends Controller
 
         if ($request->has('search') && $request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('amount', 'like', '%' . $request->search . '%')
-                    ->orWhere('last4', 'like', '%' . $request->search . '%')
-                    ->orWhere('id', 'like', '%' . $request->search . '%')
+                $q->where('amount', 'like', '%'.$request->search.'%')
+                    ->orWhere('last4', 'like', '%'.$request->search.'%')
+                    ->orWhere('id', 'like', '%'.$request->search.'%')
                     ->orWhereHas('customer', function ($q) use ($request) {
-                        $q->where('first_name', 'like', '%' . $request->search . '%')
-                            ->orWhere('last_name', 'like', '%' . $request->search . '%')
-                            ->orWhere('email', 'like', '%' . $request->search . '%');
+                        $q->where('first_name', 'like', '%'.$request->search.'%')
+                            ->orWhere('last_name', 'like', '%'.$request->search.'%')
+                            ->orWhere('email', 'like', '%'.$request->search.'%');
                     });
             });
         }
@@ -52,7 +52,7 @@ class TransactionController extends Controller
                 'search',
                 'currency_id',
                 'payment_type_id',
-                'payment_status_id'
+                'payment_status_id',
             ]),
             'pagination' => [
                 'total' => $transactions->total(),
@@ -63,10 +63,10 @@ class TransactionController extends Controller
                 'to' => $transactions->lastItem(),
             ],
             'dropdowns' => [
-                'currencies' =>  Currency::all(['id', 'code']),
+                'currencies' => Currency::all(['id', 'code']),
                 'paymentTypes' => PaymentType::all(['id', 'code']),
-                'paymentStatuses' =>  PaymentStatus::all(['id', 'code'])
-            ]
+                'paymentStatuses' => PaymentStatus::all(['id', 'code']),
+            ],
         ]);
     }
 

@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\PaymentType;
-
+use Illuminate\Database\Seeder;
 
 class PaymentTypesTableSeeder extends Seeder
 {
@@ -15,12 +13,12 @@ class PaymentTypesTableSeeder extends Seeder
     public function run(): void
     {
 
-         $types = [
+        $types = [
             ['code' => 'payment', 'name' => 'Payment'],
             ['code' => 'refund', 'name' => 'Refund'],
             ['code' => 'chargeback', 'name' => 'Charge Back'],
         ];
-                PaymentType::upsert($types,'code');
+        PaymentType::upsert($types, 'code');
 
     }
 }

@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Currency, Customer, PaymentStatus, PaymentType, Transaction};
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\PaymentStatus;
+use App\Models\PaymentType;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\{DB, Http, Validator};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Throwable;
 
 class UploadController extends Controller
 {
     const CHUNK_SIZE = 500;
+
     const MAX_FILE_SIZE = 2048; // 2MB in KB
 
     public function store(Request $request)
@@ -25,9 +31,10 @@ class UploadController extends Controller
 
         try {
             $file = $request->file('csv_file');
+
             return $this->processCsvFile($file);
         } catch (Throwable $e) {
-            return $this->errorResponse('Error processing file: ' . $e->getMessage());
+            return $this->errorResponse('Error processing file: '.$e->getMessage());
         }
     }
 
@@ -38,8 +45,8 @@ class UploadController extends Controller
                 'required',
                 'file',
                 'mimes:csv',
-                'max:' . self::MAX_FILE_SIZE
-            ]
+                'max:'.self::MAX_FILE_SIZE,
+            ],
         ]);
     }
 
@@ -59,7 +66,7 @@ class UploadController extends Controller
         $results = [
             'processed' => 0,
             'duplicates' => 0,
-            'invalid' => 0
+            'invalid' => 0,
         ];
         DB::beginTransaction();
         try {
@@ -70,23 +77,25 @@ class UploadController extends Controller
                 foreach ($chunk as $row) {
                     $record = $this->parseRecord($header, $row);
 
-                    if (!$this->isValidRecord($record)) {
+                    if (! $this->isValidRecord($record)) {
 
                         $results['invalid']++;
+
                         continue;
                     }
 
                     $transactionKey = $this->createTransactionKey($record);
                     if (isset($tempTransactions[$transactionKey])) {
                         $results['duplicates']++;
+
                         continue;
                     }
                     $tempTransactions[$transactionKey] = true;
                     $customerKey = $record['email'];
-                    if (!isset($customersToCreate[$customerKey])) {
+                    if (! isset($customersToCreate[$customerKey])) {
                         $customersToCreate[$customerKey] = [
                             'email' => $record['email'],
-                            'customer_name' => $record['customer_name']
+                            'customer_name' => $record['customer_name'],
                         ];
                     }
 
@@ -99,6 +108,7 @@ class UploadController extends Controller
 
                 if ($results['invalid'] > 0 || $results['duplicates'] > 0) {
                     DB::rollBack();
+
                     return response()->json([
                         'status' => 'error',
                         'message' => sprintf(
@@ -108,7 +118,7 @@ class UploadController extends Controller
                         ),
                         'processed' => 0,
                         'invalid' => $results['invalid'],
-                        'duplicates' => $results['duplicates']
+                        'duplicates' => $results['duplicates'],
                     ], Response::HTTP_CONFLICT);
                 }
             }
@@ -125,6 +135,7 @@ class UploadController extends Controller
                     $results['duplicates']++;
                     unset($transactionsToInsert[$key]);
                     DB::rollBack();
+
                     return response()->json([
                         'status' => 'error',
                         'message' => sprintf(
@@ -134,31 +145,34 @@ class UploadController extends Controller
                         ),
                         'processed' => 0,
                         'invalid' => $results['invalid'],
-                        'duplicates' => $results['duplicates']
+                        'duplicates' => $results['duplicates'],
                     ], Response::HTTP_CONFLICT);
                 }
             }
 
             // Bulk insert all valid transactions
-            if (!empty($transactionsToInsert)) {
+            if (! empty($transactionsToInsert)) {
                 Transaction::insert($transactionsToInsert);
                 $results['processed'] = count($transactionsToInsert);
             }
 
             DB::commit();
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'File processed successfully',
-                ...$results
+                ...$results,
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'There is an issue while uploading.',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
     protected function reconstructRecordFromTransaction($email, $transaction, $referenceData)
     {
         return [
@@ -169,9 +183,10 @@ class UploadController extends Controller
             'currency' => array_flip($referenceData['currencies'])[$transaction['currency_id']] ?? '',
             'type' => array_flip($referenceData['paymentTypes'])[$transaction['payment_type_id']] ?? '',
             'status' => array_flip($referenceData['paymentStatuses'])[$transaction['payment_status_id']] ?? '',
-            'transaction_date' => $transaction['transaction_date']
+            'transaction_date' => $transaction['transaction_date'],
         ];
     }
+
     protected function createTransactionKey($record)
     {
         return md5(implode('|', [
@@ -180,9 +195,10 @@ class UploadController extends Controller
             $record['amount'],
             $record['currency'],
             $record['type'],
-            $this->checkDateFormats($record['transaction_date'])
+            $this->checkDateFormats($record['transaction_date']),
         ]));
     }
+
     protected function bulkGetOrCreateCustomers(array $customersData): array
     {
         $existing = Customer::whereIn('email', array_keys($customersData))
@@ -191,12 +207,12 @@ class UploadController extends Controller
 
         $newCustomers = [];
         foreach ($customersData as $email => $data) {
-            if (!isset($existing[$email])) {
+            if (! isset($existing[$email])) {
                 $newCustomers[] = $data;
             }
         }
 
-        if (!empty($newCustomers)) {
+        if (! empty($newCustomers)) {
             Customer::insert($newCustomers);
             $newlyCreated = Customer::whereIn('email', array_keys($customersData))
                 ->whereNotIn('id', $existing)
@@ -207,6 +223,7 @@ class UploadController extends Controller
 
         return $existing;
     }
+
     protected function getReferenceData()
     {
         return [
@@ -223,7 +240,7 @@ class UploadController extends Controller
 
     protected function isValidRecord($record)
     {
-        return !empty($record['email']) && !empty($record['customer_name']);
+        return ! empty($record['email']) && ! empty($record['customer_name']);
     }
 
     protected function getCustomerId($record)
@@ -236,6 +253,7 @@ class UploadController extends Controller
 
         return null;
     }
+
     protected function isDuplicateTransaction($customerId, $record, $referenceData)
     {
         return Transaction::where([
@@ -245,7 +263,7 @@ class UploadController extends Controller
             'currency_id' => $referenceData['currencies'][Str::lower($record['currency'])] ?? 0,
             'payment_type_id' => $referenceData['paymentTypes'][Str::lower($record['type'])] ?? 0,
             'payment_status_id' => $referenceData['paymentStatuses'][Str::lower($record['status'])] ?? 0,
-            'transaction_date' => $this->checkDateFormats($record['transaction_date'])
+            'transaction_date' => $this->checkDateFormats($record['transaction_date']),
         ])->exists();
     }
 
@@ -260,7 +278,7 @@ class UploadController extends Controller
             'payment_status_id' => $referenceData['paymentStatuses'][Str::lower($record['status'])] ?? 0,
             'transaction_date' => $this->checkDateFormats($record['transaction_date']),
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ];
     }
 
@@ -277,7 +295,7 @@ class UploadController extends Controller
             'status' => 'completed',
             'processed' => $data['processed'],
             'duplicates' => $data['duplicates'],
-            'invalid' => $data['invalid']
+            'invalid' => $data['invalid'],
         ]);
     }
 
@@ -287,13 +305,13 @@ class UploadController extends Controller
             ->with('error', $message);
     }
 
-
     protected function checkDateFormats(string $dateString): ?string
     {
         $date = null;
         // Check for MySQL format (YYYY-MM-DD HH:MM:SS)
         if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $dateString)) {
             $date = $dateString;
+
             return $date;
         }
 
@@ -302,6 +320,7 @@ class UploadController extends Controller
             try {
                 $date = Carbon::createFromFormat('n/j/Y H:i', $dateString)
                     ->format('Y-m-d H:i:s');
+
                 return $date;
             } catch (\Exception $e) {
                 // Invalid US format date

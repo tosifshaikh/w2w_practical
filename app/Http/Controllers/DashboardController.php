@@ -34,7 +34,7 @@ class DashboardController extends Controller
                 return [
                     'status_name' => $item->paymentStatus->code,
                     'count' => $item->count,
-                    'total_amount' => $item->total_amount ?? 0
+                    'total_amount' => $item->total_amount ?? 0,
                 ];
             });
 
@@ -52,7 +52,7 @@ class DashboardController extends Controller
                 return [
                     'currency_name' => $item->currency->code,
                     'count' => $item->count,
-                    'total_amount' => $item->total_amount ?? 0
+                    'total_amount' => $item->total_amount ?? 0,
                 ];
             });
         // Transactions over time (last 30 days)
@@ -71,7 +71,7 @@ class DashboardController extends Controller
                 'totalTransactions' => $totalTransactions,
                 'byStatus' => $transactionsByStatus,
                 'overTime' => $transactionsOverTime,
-                'byCurrency' => $transactionsByCurrency
+                'byCurrency' => $transactionsByCurrency,
             ],
         ]);
     }

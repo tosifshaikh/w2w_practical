@@ -3,24 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 class Transaction extends Model
 {
-    protected $fillable = ['customer_id', 'amount','last4','currency_id','payment_type_id','payment_status_id', 'transaction_date'];
-   protected $casts = [
+    protected $fillable = ['customer_id', 'amount', 'last4', 'currency_id', 'payment_type_id', 'payment_status_id', 'transaction_date'];
+
+    protected $casts = [
         'transaction_date' => 'datetime:Y-m-d H:i:s',
     ];
 
-
-protected function formattedTransactionDate(): Attribute
+    protected function formattedTransactionDate(): Attribute
     {
         return Attribute::make(
             get: function () {
-                if (!$this->transaction_date) {
+                if (! $this->transaction_date) {
                     return null;
                 }
 
@@ -33,15 +32,15 @@ protected function formattedTransactionDate(): Attribute
             }
         );
     }
+
     /**
      * Get the customer that owns the Transaction
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
+
     /**
      * Get the currency that owns the Transaction
      */
@@ -49,6 +48,7 @@ protected function formattedTransactionDate(): Attribute
     {
         return $this->belongsTo(Currency::class, 'currency_id');
     }
+
     /**
      * Get the payment type that owns the Transaction
      */
@@ -56,7 +56,8 @@ protected function formattedTransactionDate(): Attribute
     {
         return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }
-     /**
+
+    /**
      * Get the payment status that owns the Transaction
      */
     public function paymentStatus(): BelongsTo

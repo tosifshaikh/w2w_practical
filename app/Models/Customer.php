@@ -9,7 +9,7 @@ class Customer extends Model
 {
     protected $fillable = ['email', 'customer_name'];
 
-    public function transactions():HasMany
+    public function transactions(): HasMany
     /**
      * Get all of the comments for the Customer
      *
@@ -17,7 +17,6 @@ class Customer extends Model
      */
     {
         return $this->hasMany(Transaction::class, 'customer_id', 'id');
-       // return $this->hasMany(transactions::class, 'foreign_key', 'local_key');
+        // return $this->hasMany(transactions::class, 'foreign_key', 'local_key');
     }
-
 }

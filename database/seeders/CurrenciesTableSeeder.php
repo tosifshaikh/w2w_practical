@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Currency;
+use Illuminate\Database\Seeder;
 
 class CurrenciesTableSeeder extends Seeder
 {
@@ -13,11 +12,11 @@ class CurrenciesTableSeeder extends Seeder
      */
     public function run(): void
     {
-         $currencies = [
+        $currencies = [
             ['code' => 'USD', 'name' => 'US Dollar'],
             ['code' => 'EUR', 'name' => 'Euro'],
             ['code' => 'GBP', 'name' => 'British Pound'],
         ];
-        Currency::upsert($currencies,'code');
+        Currency::upsert($currencies, 'code');
     }
 }
