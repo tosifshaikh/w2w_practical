@@ -1,0 +1,21 @@
+customer_name,email,last4,currency,amount,type,status,transaction_date
+John Smith,john@example.com,1234,USD,150.50,payment,completed,2024-01-15 14:30:00
+Jane Doe,jane@example.com,5678,EUR,89.99,payment,pending,2024-01-16 09:15:00
+Mike Johnson,mike@example.com,9012,USD,75.25,refund,completed,2024-01-17 11:45:00
+Sarah Wilson,sarah@example.com,3456,GBP,200.00,payment,failed,2024-01-18 16:20:00
+Robert Brown,robert@example.com,7890,USD,320.75,payment,completed,2024-01-19 10:30:00
+Emily Davis,emily@example.com,2345,EUR,45.99,payment,pending,2024-01-20 13:15:00
+David Miller,david@example.com,6789,USD,500.00,chargeback,failed,2024-01-21 15:45:00
+Lisa Anderson,lisa@example.com,1357,GBP,125.50,refund,completed,2024-01-22 09:20:00
+James Wilson,james@example.com,2468,USD,89.99,payment,completed,2024-01-23 14:10:00
+Maria Garcia,maria@example.com,3579,EUR,175.25,payment,pending,2024-01-24 11:35:00
+Christopher Lee,chris@example.com,4680,USD,250.00,payment,completed,2024-01-25 16:50:00
+Amanda Taylor,amanda@example.com,5791,GBP,95.75,refund,completed,2024-01-26 08:25:00
+Kevin Martinez,kevin@example.com,6802,USD,180.50,payment,failed,2024-01-27 12:40:00
+Jennifer White,jennifer@example.com,7913,EUR,300.00,chargeback,pending,2024-01-28 17:15:00
+Thomas Rodriguez,thomas@example.com,8024,USD,65.99,payment,completed,2024-01-29 10:05:00
+Michelle Clark,michelle@example.com,9135,GBP,220.25,payment,completed,2024-01-30 14:55:00
+Daniel Lewis,daniel@example.com,0246,USD,145.75,refund,failed,2024-01-31 09:30:00
+Laura Walker,laura@example.com,1357,EUR,85.50,payment,pending,2024-02-01 13:20:00
+Ryan Hall,ryan@example.com,2468,USD,195.00,payment,completed,2024-02-02 11:15:00
+Nicole Young,nicole@example.com,3579,GBP,275.99,chargeback,completed,2024-02-03 15:40:00
