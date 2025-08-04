@@ -30,6 +30,7 @@ const {
     clearForm,
     openPreviewModal,
     closePreviewModal,
+    fileInput
 } = useCsvUploader();
 </script>
 

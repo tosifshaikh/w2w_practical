@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { toast } from 'vue3-toastify';
 export function useCsvUploader() {
     const file = ref(null);
+    const fileInput = ref(null);
     const isUploading = ref(false);
     const uploadProgress = ref(0);
     const message = ref('');
@@ -98,7 +99,7 @@ export function useCsvUploader() {
         file.value = null;
         message.value = '';
         // Reset the file input element
-        if (fileInput.value) {
+        if (fileInput && fileInput.value) {
             fileInput.value.value = '';
         }
     };
@@ -124,7 +125,7 @@ export function useCsvUploader() {
                 },
             });
 
-            if (response.data && typeof response.data === 'object') {
+            if (response) {
                 summary.value = response.data;
                 file.value = null;
                 message.value = '';
@@ -137,7 +138,12 @@ export function useCsvUploader() {
                 errorMessage = error.response.data.message || errorMessage;
             }
             showMessage(errorMessage, 'error');
-            summary.value = error.response.data;
+            if(error.response.data) {
+                summary.value = error.response.data;
+            }else {
+                summary.value = '';
+            }
+
         } finally {
             isUploading.value = false;
         }
@@ -193,5 +199,6 @@ export function useCsvUploader() {
         clearForm,
         openPreviewModal,
         closePreviewModal,
+        fileInput
     };
 }
